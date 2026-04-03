@@ -1,24 +1,19 @@
-name: radio_app
-description: FunAsia Radio Streamer
+name: flutter_app
+description: A new Flutter project.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
 version: 1.0.0+1
-publish_to: 'none'
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  just_audio: ^0.9.36
-  just_audio_background: ^0.0.1-beta.11
-  path_provider: ^2.1.1
-  permission_handler: ^11.4.4
-  connectivity_plus: ^5.0.0
-  shared_preferences: ^2.2.2
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  cupertino_icons: ^1.0.2
+  permission_handler: ^11.3.1
 
 flutter:
   uses-material-design: true
