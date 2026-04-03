@@ -1,31 +1,22 @@
-name: Build Radio APK
-on: [push, workflow_dispatch] # Builds every time you save or when you click "Run"
+name: Build APK
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
-          
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+          distribution: 'zulu'
+          java-version: '17' # Must be 17 for modern Flutter
+      - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-          
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Build APK
-        run: flutter build apk --debug # Debug is faster and doesn't require signing
-
+          flutter-version: '3.19.0' # Specific stable version
+      - run: flutter pub get
+      - run: flutter build apk --debug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: radio-app-apk
+          name: radio-app
           path: build/app/outputs/flutter-apk/app-debug.apk
