@@ -3,94 +3,81 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
 void main() async {
-  // Initialize background capabilities
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize the background service
   await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
+    androidNotificationChannelId: 'com.example.radio.channel.audio',
+    androidNotificationChannelName: 'Radio Playback',
     androidNotificationOngoing: true,
   );
-  runApp(const RadioApp());
+  
+  runApp(const MaterialApp(home: RadioPlayerScreen()));
 }
 
-class RadioApp extends StatelessWidget {
-  const RadioApp({super.key});
+class RadioPlayerScreen extends StatefulWidget {
+  const RadioPlayerScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: RadioScreen(),
-    );
-  }
+  State<RadioPlayerScreen> createState() => _RadioPlayerScreenState();
 }
 
-class RadioScreen extends StatefulWidget {
-  @override
-  _RadioScreenState createState() => _RadioScreenState();
-}
-
-class _RadioScreenState extends State<RadioScreen> {
+class _RadioPlayerScreenState extends State<RadioPlayerScreen> {
   final _player = AudioPlayer();
   final String streamUrl = "https://funasia.streamguys1.com/live9";
 
   @override
   void initState() {
     super.initState();
-    _setupAudio();
+    _loadRadio();
   }
 
-  void _setupAudio() async {
-    // Define the audio source with metadata for the lock screen
-    final source = AudioSource.uri(
-      Uri.parse(streamUrl),
-      tag: MediaItem(
-        id: '1',
-        album: "Live Radio",
-        title: "FunAsia Stream",
-        artUri: Uri.parse("https://via.placeholder.com/300"), // Optional logo
-      ),
-    );
-
+  Future<void> _loadRadio() async {
     try {
-      await _player.setAudioSource(source);
+      // metadata shows up on your lock screen
+      await _player.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(streamUrl),
+          tag: const MediaItem(
+            id: '1',
+            title: "FunAsia Live",
+            album: "Live Stream",
+            artUri: null, 
+          ),
+        ),
+      );
     } catch (e) {
-      print("Error loading stream: $e");
+      debugPrint("Error: $e");
     }
   }
 
   @override
   void dispose() {
-    _player.dispose();
+    _player.dispose(); // Cleans up memory when app is closed
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Radio App")),
+      backgroundColor: Colors.blueGrey[900],
+      appBar: AppBar(title: const Text("FunAsia Radio"), backgroundColor: Colors.transparent),
       body: Center(
         child: StreamBuilder<PlayerState>(
           stream: _player.playerStateStream,
           builder: (context, snapshot) {
-            final playerState = snapshot.data;
-            final processingState = playerState?.processingState;
-            final playing = playerState?.playing;
+            final playing = snapshot.data?.playing ?? false;
+            final processingState = snapshot.data?.processingState;
 
-            if (processingState == ProcessingState.loading ||
-                processingState == ProcessingState.buffering) {
-              return CircularProgressIndicator();
-            } else if (playing != true) {
-              return IconButton(
-                icon: Icon(Icons.play_arrow),
-                iconSize: 64,
-                onPressed: _player.play,
-              );
-            } else {
-              return IconButton(
-                icon: Icon(Icons.pause),
-                iconSize: 64,
-                onPressed: _player.pause,
-              );
+            if (processingState == ProcessingState.loading) {
+              return const CircularProgressIndicator(color: Colors.white);
             }
+            return IconButton(
+              iconSize: 100,
+              color: Colors.white,
+              icon: Icon(playing ? Icons.pause_circle : Icons.play_circle),
+              onPressed: playing ? _player.pause : _player.play,
+            );
           },
         ),
       ),
