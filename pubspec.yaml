@@ -1,7 +1,7 @@
 name: radio_app
-description: A new Flutter project.
-publish_to: 'none'
+description: FunAsia Radio Streamer
 version: 1.0.0+1
+publish_to: 'none'
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -11,12 +11,7 @@ dependencies:
     sdk: flutter
   just_audio: ^0.9.36
   just_audio_background: ^0.0.1-beta.11
-  cupertino_icons: ^1.0.6
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
+  path_provider: ^2.1.1
 
 flutter:
   uses-material-design: true
