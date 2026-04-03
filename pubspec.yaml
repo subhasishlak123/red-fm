@@ -12,6 +12,13 @@ dependencies:
   just_audio: ^0.9.36
   just_audio_background: ^0.0.1-beta.11
   path_provider: ^2.1.1
+  permission_handler: ^11.4.4
+  connectivity_plus: ^5.0.0
+  shared_preferences: ^2.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
 
 flutter:
   uses-material-design: true
